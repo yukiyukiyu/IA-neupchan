@@ -22,20 +22,59 @@
 		Message: <input type="text" name="message"><br>
 		<input type="Submit"><br>
 		</form>
+
 	<?php
+
+		$connect=mysql_connect('localhost', 'root', '');
+		if(!$connect)
+		{
+			die('Could not connect: '. mysql_error());
+		}
+		mysql_select_db("IA-database", $connect);
+
+		if($_POST==NULL)
+		{
+			$new_result=mysql_query("SELECT * FROM IAmoe");
+			while($row=mysql_fetch_array($new_result))
+			{
+				echo $row['content'];
+				echo "<br />";
+			}
+		}
+
 		if($_POST!=NULL)
 		{
 			$message=$_POST['message'];
-			if(strcmp($message, "shuzu!")==0)
+			$message=addslashes($message);
+
+			$sql="INSERT INTO IAmoe (content) VALUES ('$message')";
+			$result=mysql_query($sql, $connect);
+
+			if($result)
 			{
-				echo "A gift for you ~";
-				echo "<br>";
-				echo '<embed height="415" width="544" quality="high" allowfullscreen="true" type="application/x-shockwave-flash" src="http://static.hdslb.com/miniloader.swf" flashvars="aid=1479974&page=1" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash"></embed>';
+
+				if(strcmp($message, "shuzu!")==0)
+				{
+					echo "A gift for you ~";
+					echo "<br>";
+					echo '<embed height="415" width="544" quality="high" allowfullscreen="true" type="application/x-shockwave-flash" src="http://static.hdslb.com/miniloader.swf" flashvars="aid=1479974&page=1" pluginspage="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash"></embed>';
+				}
+
+				else
+				{
+					$new_result=mysql_query("SELECT * FROM IAmoe");
+					while($row=mysql_fetch_array($new_result))
+					{
+						echo $row['content'];
+						echo "<br />";
+					}
+				}
 			}
-			elseif(strlen($message)>0)
+			else
 			{
-				echo $message;
+				echo "I'm sorry, my master. An error has occurred.";
 			}
+			mysql_close($connect);
 		}
 	?>
 
