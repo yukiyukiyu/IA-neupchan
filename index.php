@@ -24,13 +24,6 @@
 		<input type="Submit">
 		</form>
 
-		<p style="color: purple">
-			My master, you can use delete to clear these words.
-		<form method="post" action="ia_delete.php">
-		<input type="submit" value="Delete">
-		</form>
-		</p>
-
 	<?php
 
 		$connect=mysql_connect('localhost', 'root', '');
@@ -39,13 +32,85 @@
 			die('Could not connect: '. mysql_error());
 		}
 		mysql_select_db("IA-database", $connect);
+		
+		session_start();
+		if($_SESSION!=NULL)
+		{
+			if($_SESSION['admin']==1)
+			{
+				echo '	<p style="color: purple">
+								My admin, you can use delete to clear all these words.
+						<form method="post" action="ia_delete.php">
+						<input type="submit" value="Delete">
+						</form>
+						</p>
+						';
+				echo '	<form method="post" action="logout.php">
+						<input type="submit" value="Log out">
+						</form>
+						';
+				echo "<br />";
+			}
+		}
+		else 
+		{
+			echo '	<form method="post" action="login.php">
+					<input type="submit" value="Log in">
+					</form>
+					';
+			echo "<br />";
+		}
 
 		if($_POST==NULL)
 		{
 			$new_result=mysql_query("SELECT * FROM IAmoe");
 			while($row=mysql_fetch_array($new_result))
 			{
-				echo $row['content'];
+				if($_SESSION!=NULL)
+				{
+					if($_SESSION['admin']==1)
+					{
+						if($row['state']==0)
+						{
+							echo $row['content'];
+							echo '	<form method="post" action="ia_delete_2.php"
+										>
+									<input type="submit" value="Delete">
+									<input type="hidden" value="'.$row['id'].'"
+										name="id">
+									</form>		
+									';
+							echo '	<form method="post" action="mask.php">
+									<input type="submit" value="Mask">
+									<input type="hidden" value="'.$row['id'].'"
+										name="id">	
+									</form>
+									';
+						}
+						else if($row['state']==1)
+						{
+							echo '	<span style="color: red">
+									'.$row['content'].'
+									</span>
+									';
+							echo '	<form method="post" action="ia_delete_2.php"
+										>
+									<input type="submit" value="Delete">
+									<input type="hidden" value="'.$row['id'].'"
+										name="id">
+									</form>
+									';
+							echo '	<form method="post" action="reinstate.php">
+									<input type="submit" value="Reinstate">
+									<input type="hidden" value="'.$row['id'].'"
+										name="id">
+									</form>
+									';
+						}
+					}
+				}
+				else if($row['state']==0)
+					echo $row['content'];
 				echo "<br />";
 			}
 		}
@@ -55,7 +120,7 @@
 			$message=$_POST['message'];
 			$message=addslashes($message);
 
-			if(strlen($message)>20)
+			if(strlen($message)>50)
 			{
 				echo "I'm sorry, my master, the message is too long.";
 			}
@@ -79,7 +144,51 @@
 						$new_result=mysql_query("SELECT * FROM IAmoe");
 						while($row=mysql_fetch_array($new_result))
 						{
-							echo $row['content'];
+							if($_SESSION!=NULL)
+							{
+								if($_SESSION['admin']==1)
+								{
+									if($row['state']==0)
+									{
+										echo $row['content'];
+										echo '	<form method="post" action="ia_delete_2.php"
+													>
+												<input type="submit" value="Delete">
+												<input type="hidden" value="'.$row['id'].'"
+													name="id">
+												</form>		
+												';
+										echo '	<form method="post" action="mask.php">
+												<input type="submit" value="Mask">
+												<input type="hidden" value="'.$row['id'].'"
+													name="id">	
+												</form>
+												';
+									}
+									else if($row['state']==1)
+									{
+										echo '	<span style="color: red">
+												'.$row['content'].'
+												</span>
+												';
+										echo '	<form method="post" action="ia_delete_2.php"
+													>
+												<input type="submit" value="Delete">
+												<input type="hidden" value="'.$row['id'].'"
+													name="id">
+												</form>
+												';
+										echo '	<form method="post" action="reinstate.php">
+												<input type="submit" value="Reinstate">
+												<input type="hidden" value="'.$row['id'].'"
+													name="id">
+												</form>
+												';
+									}
+								}
+							}
+							else if($row['state']==0)
+								echo $row['content'];
 							echo "<br />";
 						}
 					}
