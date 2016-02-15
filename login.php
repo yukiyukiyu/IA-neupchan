@@ -2,7 +2,11 @@
 	<body>
 
 		<p>
-			<img src="5.jpeg" width="280" height="398">	
+			<img src="5.jpeg" width="280" height="398" border="0" usemap="#surmap" />
+			<map name="surmap">
+				<area shape="circle" coords="140, 180, 10" href="surprise.php"
+					onfocus="blur(this);" />
+			</map>	
 		</p>
 		<p style="color: purple">
 		Welcome, my admin.
@@ -10,7 +14,7 @@
 
 		<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 		Admin name:<input type="text" name="adminname"><br>
-		Password:<input type="text" name="password"><br>
+		Password:<input type="password" name="password"><br>
 		<input type="submit">
 		</form>
 

@@ -8,8 +8,8 @@
 
 	mysql_select_db("IA-database", $connect);
 
-	$reinstateid=$_POST['id'];
-	mysql_query("UPDATE IAmoe SET state=0 WHERE id=$reinstateid");
+	$deleteid=$_POST['id'];
+	mysql_query("DELETE FROM IAmoe WHERE id=$deleteid");
 
 	mysql_close($connect);
 
